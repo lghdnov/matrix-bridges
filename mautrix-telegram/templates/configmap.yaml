@@ -33,6 +33,11 @@ data:
       async_transactions: {{ .Values.config.appservice.async_transactions | default false }}
       hostname: {{ .Values.config.appservice.hostname | default "0.0.0.0" | quote }}
       port: {{ .Values.config.appservice.port | default 8080 }}
+      address: http://{{ .Values.config.appservice.hostname | default "0.0.0.0" }}:{{ .Values.config.appservice.port | default 8080 }}
+      database: {{ .Values.database.uri | default "/data/mautrix-telegram.db" | quote }}
+      database_opts:
+        min_size: 1
+        max_size: 10
 
     telegram:
       api_id: {{ .Values.telegram.apiId | required "telegram.apiId is required" }}
@@ -107,10 +112,6 @@ data:
         disable_notifications: {{ .Values.config.bridge.backfill.disable_notifications | default false }}
       permissions:
         {{- toYaml .Values.config.bridge.permissions | nindent 8 }}
-
-    database:
-      type: {{ .Values.database.type | default "sqlite3" | quote }}
-      uri: {{ .Values.database.uri | default "/data/mautrix-telegram.db" | quote }}
 
     logging:
       version: 1
