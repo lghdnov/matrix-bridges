@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: dock.mau.dev/mautrix/telegram
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "v0.15.2"
 
 imagePullSecrets: []
 nameOverride: ""

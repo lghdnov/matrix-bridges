@@ -56,7 +56,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - python
+            - python3
             - -m
             - mautrix_telegram
             - -c
@@ -88,12 +88,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
-            - name: config
-              mountPath: /data/config.yaml
-              subPath: config.yaml
-            - name: registration
-              mountPath: /data/registration.yaml
-              subPath: registration.yaml
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
