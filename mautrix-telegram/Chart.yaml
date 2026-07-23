@@ -1,0 +1,6 @@
+apiVersion: v2
+name: mautrix-telegram
+version: 0.1.0
+appVersion: "latest"
+description: A Helm chart for mautrix-telegram Matrix bridge (puppeting mode)
+type: application

@@ -1,0 +1,153 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mautrix-telegram.fullname" . }}-config
+  labels:
+    {{- include "mautrix-telegram.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    homeserver:
+      address: {{ .Values.homeserver.address | required "homeserver.address is required" | quote }}
+      domain: {{ .Values.homeserver.domain | required "homeserver.domain is required" | quote }}
+      {{- if .Values.homeserver.clientApiUrl }}
+      client_api_url: {{ .Values.homeserver.clientApiUrl | quote }}
+      {{- end }}
+      {{- if .Values.homeserver.serverApiUrl }}
+      server_api_url: {{ .Values.homeserver.serverApiUrl | quote }}
+      {{- end }}
+      {{- if .Values.homeserver.adminApiSecret }}
+      admin_api_secret: {{ .Values.homeserver.adminApiSecret | quote }}
+      {{- end }}
+      async_media: {{ .Values.homeserver.asyncMedia }}
+      status_endpoint: null
+      message_send_checkpoint_endpoint: null
+      websocket_proxy: null
+
+    appservice:
+      id: {{ .Values.config.appservice.id | default "telegram" | quote }}
+      as_token: {{ .Values.registration.asToken | required "registration.asToken is required" | quote }}
+      hs_token: {{ .Values.registration.hsToken | required "registration.hsToken is required" | quote }}
+      bot_username: {{ .Values.config.appservice.bot_username | default "telegrambot" | quote }}
+      bot_displayname: {{ .Values.config.appservice.bot_displayname | default "Telegram bridge bot" | quote }}
+      ephemeral_events: {{ .Values.config.appservice.ephemeral_events | default true }}
+      async_transactions: {{ .Values.config.appservice.async_transactions | default false }}
+      hostname: {{ .Values.config.appservice.hostname | default "0.0.0.0" | quote }}
+      port: {{ .Values.config.appservice.port | default 8080 }}
+
+    telegram:
+      api_id: {{ .Values.telegram.apiId | required "telegram.apiId is required" }}
+      api_hash: {{ .Values.telegram.apiHash | required "telegram.apiHash is required" | quote }}
+      bot_token: {{ .Values.telegram.botToken | default "" | quote }}
+      device_info:
+        device_model: {{ .Values.config.telegram.device_info.device_model | default "mautrix-telegram" | quote }}
+        system_version: {{ .Values.config.telegram.device_info.system_version | default "Docker" | quote }}
+        app_version: {{ .Values.config.telegram.device_info.app_version | default "mautrix-telegram" | quote }}
+        lang_code: {{ .Values.config.telegram.device_info.lang_code | default "en" | quote }}
+      proxy:
+        type: {{ .Values.config.telegram.proxy.type | default "disabled" | quote }}
+        {{- if ne (.Values.config.telegram.proxy.type | default "disabled") "disabled" }}
+        address: {{ .Values.config.telegram.proxy.address | quote }}
+        port: {{ .Values.config.telegram.proxy.port | default 8080 }}
+        rdns: {{ .Values.config.telegram.proxy.rdns | default true }}
+        username: {{ .Values.config.telegram.proxy.username | default "" | quote }}
+        password: {{ .Values.config.telegram.proxy.password | default "" | quote }}
+        {{- end }}
+      connection:
+        timeout: {{ .Values.config.telegram.connection.timeout | default 120 }}
+        retries: {{ .Values.config.telegram.connection.retries | default 5 }}
+        retry_delay: {{ .Values.config.telegram.connection.retry_delay | default 1 }}
+        flood_sleep_threshold: {{ .Values.config.telegram.connection.flood_sleep_threshold | default 60 }}
+        request_retries: {{ .Values.config.telegram.connection.request_retries | default 5 }}
+        connection_retries: {{ .Values.config.telegram.connection.connection_retries | default -1 }}
+        retry_delay_min: {{ .Values.config.telegram.connection.retry_delay_min | default 1 }}
+        retry_delay_max: {{ .Values.config.telegram.connection.retry_delay_max | default 15 }}
+        max_concurrent_transmissions: {{ .Values.config.telegram.connection.max_concurrent_transmissions | default 1000 }}
+
+    bridge:
+      username_template: {{ .Values.config.bridge.username_template | default "telegram_{userid}" | quote }}
+      displayname_template: {{ .Values.config.bridge.displayname_template | default "{displayname} (Telegram)" | quote }}
+      private_chat_portal_meta: {{ .Values.config.bridge.private_chat_portal_meta | default false }}
+      delivery_receipts: {{ .Values.config.bridge.delivery_receipts | default false }}
+      delivery_error_reports: {{ .Values.config.bridge.delivery_error_reports | default false }}
+      periodic_sync: {{ .Values.config.bridge.periodic_sync | default true }}
+      sync_interval: {{ .Values.config.bridge.sync_interval | default 10 }}
+      sync_create_limit: {{ .Values.config.bridge.sync_create_limit | default 30 }}
+      startup_sync: {{ .Values.config.bridge.startup_sync | default true }}
+      sync_channel_members: {{ .Values.config.bridge.sync_channel_members | default true }}
+      sync_matrix_state: {{ .Values.config.bridge.sync_matrix_state | default true }}
+      allow_matrix_login: {{ .Values.config.bridge.allow_matrix_login | default true }}
+      public_portals: {{ .Values.config.bridge.public_portals | default false }}
+      sync_with_custom_puppets: {{ .Values.config.bridge.sync_with_custom_puppets | default true }}
+      double_puppet_server_map: {{ .Values.config.bridge.double_puppet_server_map | default dict | toYaml | nindent 8 }}
+      double_puppet_allow_discovery: {{ .Values.config.bridge.double_puppet_allow_discovery | default true }}
+      login_shared_secret_map: {{ .Values.config.bridge.login_shared_secret_map | default dict | toYaml | nindent 8 }}
+      invite_link_resolve: {{ .Values.config.bridge.invite_link_resolve | default false }}
+      allow_user_invite: {{ .Values.config.bridge.allow_user_invite | default true }}
+      encryption:
+        allow: {{ .Values.config.bridge.encryption.allow | default false }}
+        default: {{ .Values.config.bridge.encryption.default | default false }}
+        require: {{ .Values.config.bridge.encryption.require | default false }}
+        allow_key_sharing: {{ .Values.config.bridge.encryption.allow_key_sharing | default false }}
+        verification_levels:
+          receive: {{ .Values.config.bridge.encryption.verification_levels.receive | default "unverified" | quote }}
+          send: {{ .Values.config.bridge.encryption.verification_levels.send | default "unverified" | quote }}
+          share: {{ .Values.config.bridge.encryption.verification_levels.share | default "cross-signed-tofu" | quote }}
+        rotation:
+          enable_custom: {{ .Values.config.bridge.encryption.rotation.enable_custom | default false }}
+          milliseconds: {{ .Values.config.bridge.encryption.rotation.milliseconds | default 604800000 }}
+          messages: {{ .Values.config.bridge.encryption.rotation.messages | default 100 }}
+      private_chat_name_templates:
+        private: {{ .Values.config.bridge.private_chat_name_templates.private | default "{displayname}" | quote }}
+        group: {{ .Values.config.bridge.private_chat_name_templates.group | default "{title}" | quote }}
+      portal_message_buffer: {{ .Values.config.bridge.portal_message_buffer | default 128 }}
+      backfill:
+        invite_own_puppet: {{ .Values.config.bridge.backfill.invite_own_puppet | default true }}
+        initial_limit: {{ .Values.config.bridge.backfill.initial_limit | default 0 }}
+        missed_limit: {{ .Values.config.bridge.backfill.missed_limit | default 1000 }}
+        disable_notifications: {{ .Values.config.bridge.backfill.disable_notifications | default false }}
+      permissions:
+        {{- toYaml .Values.config.bridge.permissions | nindent 8 }}
+
+    database:
+      type: {{ .Values.database.type | default "sqlite3" | quote }}
+      uri: {{ .Values.database.uri | default "/data/mautrix-telegram.db" | quote }}
+
+    logging:
+      version: 1
+      formatters:
+        normal:
+          format: "[%(asctime)s] [%(levelname)s@%(name)s] %(message)s"
+      handlers:
+        {{- if eq .Values.logging.output "stdout" }}
+        stdout:
+          class: logging.StreamHandler
+          formatter: normal
+          stream: ext://sys.stdout
+      root:
+        level: {{ .Values.logging.level | default "DEBUG" | quote }}
+        handlers: [stdout]
+      loggers:
+        mau:
+          level: {{ .Values.logging.level | default "DEBUG" | quote }}
+        telethon:
+          level: {{ .Values.logging.level | default "DEBUG" | quote }}
+        aiohttp:
+          level: INFO
+        {{- else }}
+        file:
+          class: logging.handlers.RotatingFileHandler
+          formatter: normal
+          filename: /data/mautrix-telegram.log
+          maxBytes: 104857600
+          backupCount: 10
+      root:
+        level: {{ .Values.logging.level | default "DEBUG" | quote }}
+        handlers: [file]
+      loggers:
+        mau:
+          level: {{ .Values.logging.level | default "DEBUG" | quote }}
+        telethon:
+          level: {{ .Values.logging.level | default "DEBUG" | quote }}
+        aiohttp:
+          level: INFO
+        {{- end }}
