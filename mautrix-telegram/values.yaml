@@ -157,7 +157,6 @@ config:
       disable_notifications: false
     permissions:
       "*": relay
-      "example.com": user
   appservice:
     id: telegram
     as_token: ""
