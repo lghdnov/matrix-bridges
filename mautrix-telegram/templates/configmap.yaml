@@ -34,7 +34,7 @@ data:
       hostname: {{ .Values.config.appservice.hostname | default "0.0.0.0" | quote }}
       port: {{ .Values.config.appservice.port | default 8080 }}
       address: http://{{ .Values.config.appservice.hostname | default "0.0.0.0" }}:{{ .Values.config.appservice.port | default 8080 }}
-      database: sqlite:///data/mautrix-telegram.db
+      database: /data/mautrix-telegram.db
       database_opts:
         min_size: 1
         max_size: 10
