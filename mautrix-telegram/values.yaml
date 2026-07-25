@@ -93,9 +93,9 @@ database:
   # Type: sqlite3, postgres
   type: sqlite3
   # URI for the database
-  # For sqlite3: /data/mautrix-telegram.db
-  # For postgres: postgresql://user:password@host/database
-  uri: /data/mautrix-telegram.db
+  # For sqlite3: sqlite:///data/mautrix-telegram.db
+  # For postgres: postgresql://user:***@host/database
+  uri: ""
 
 # Logging level
 logging:

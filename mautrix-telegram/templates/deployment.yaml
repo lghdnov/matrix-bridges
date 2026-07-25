@@ -37,8 +37,8 @@ spec:
             - |
               set -e
               mkdir -p /data
-              cp /tmp/config/config.yaml /data/config.yaml
-              cp /tmp/registration/registration.yaml /data/registration.yaml
+              cp -f /tmp/config/config.yaml /data/config.yaml
+              cp -f /tmp/registration/registration.yaml /data/registration.yaml
               chown -R 1337:1337 /data
           securityContext:
             runAsUser: 0
